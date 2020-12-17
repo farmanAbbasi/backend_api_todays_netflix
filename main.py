@@ -7,6 +7,8 @@ import json
 from flask_cors import CORS, cross_origin
 CORS(app)
 
+#deploued api
+#https://google-get-trending-netflix.herokuapp.com/netflixToday
 def getMovieUrl():
     url = "https://flixpatrol.com/top10/netflix"
     html_content = requests.get(url).text
@@ -16,6 +18,7 @@ def getMovieUrl():
     count=0
     finalArray=[]
     rank=0
+    power=21
     for text in special_divs:
         count+=1
         if(count>20):
@@ -34,7 +37,9 @@ def getMovieUrl():
             img_url=img_url.replace("/img3","/img2")
             
             rank=rank+1
+            power=power-1
             data={"rank":rank,
+                  "power":power,
                   "title":splited[9],
                   "image_url":img_url}
             finalArray.append(data)
