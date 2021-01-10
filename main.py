@@ -34,7 +34,7 @@ def getMovieUrl():
             #format now: https://filmtoro.cz/img3/tv/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg
             #https://filmtoro.cz/img2/tv/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg
             img_url=splited[7]
-            img_url=img_url.replace("/img3","/img2")
+            img_url=img_url.replace("/img3","/img")
             
             rank=rank+1
             power=power-1
