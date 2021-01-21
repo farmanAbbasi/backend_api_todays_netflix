@@ -6,7 +6,6 @@ app = Flask(__name__)
 import json
 from flask_cors import CORS, cross_origin
 CORS(app)
-
 #deploued api
 #https://google-get-trending-netflix.herokuapp.com/netflixToday
 def getMovieUrl():
