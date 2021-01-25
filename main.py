@@ -66,7 +66,7 @@ def getNewsUrl(language):
        msg=text.text
        for img in text('img'):
            image_src=img['src']
-           image_src=image_src.replace("width-134,height-99","width-500,height-350")
+           image_src=image_src.replace("width-134,height-99","width-800,height-600")
            
        returnData={
             "link":link,
