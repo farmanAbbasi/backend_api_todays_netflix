@@ -25,7 +25,7 @@ def getMovieFromNetflixXLSX():
                 'rank': row['weekly_rank'],
                 'power': 11-row['weekly_rank'],
                 'title': row['show_title'],
-                'img_url':None
+                'img_url':'https://picsum.photos/id/1/200/300'
             }
             # Append the dictionary to the list
             finalArray.append(row_dict)
