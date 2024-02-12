@@ -1,49 +1,48 @@
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
+import ssl
 from flask import Flask
 from flask import request
 app = Flask(__name__)
 import json
 from flask_cors import CORS, cross_origin
 CORS(app)
-#deploued api
-#https://google-get-trending-netflix.herokuapp.com/netflixToday
-def getMovieUrl():
-    url = "https://flixpatrol.com/top10/netflix"
-    html_content = requests.get(url).text
-    soup = BeautifulSoup(html_content, "html.parser")
-   
-    special_divs = soup.find_all('div',{'class':'threedots'})
-    count=0
-    finalArray=[]
-    rank=0
-    power=21
-    for text in special_divs:
-        count+=1
-        if(count>20):
-            break
-        download = text.find_all('a', href = True)
-        
-        
-        for text in download:
-            data={}
-            text=str(text)
-            splited=text.split('"')
-            #change image url for better resolution
-            #format now: https://filmtoro.cz/img3/tv/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg
-            #https://filmtoro.cz/img2/tv/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg
-            img_url=splited[7]
-            img_url=img_url.replace("/img3","/img")
-            
-            rank=rank+1
-            power=power-1
-            data={"rank":rank,
-                  "power":power,
-                  "title":splited[9],
-                  "image_url":img_url}
-            finalArray.append(data)
 
-    return finalArray      
+def getMovieFromNetflixXLSX():
+    url = "https://www.netflix.com/tudum/top10/data/all-weeks-global.xlsx"
+    try:
+        finalArray = []
+        # Ignore SSL certificate verification
+        ssl._create_default_https_context = ssl._create_unverified_context
+        
+        # Read the Excel file
+        df = pd.read_excel(url,nrows=10,usecols=['week', 'category', 'weekly_rank', 'show_title', 'season_title'])
+        print(df)
+        for index, row in df.iterrows():
+            # Create a dictionary for the current row
+            row_dict = {
+                'rank': row['weekly_rank'],
+                'power': 11-row['weekly_rank'],
+                'title': row['show_title'],
+                'img_url':None
+            }
+            # Append the dictionary to the list
+            finalArray.append(row_dict)
+        return finalArray
+
+        # data={"rank":d,
+        #           "power":power,
+        #           "title":splited[9],
+        #           "image_url":img_url}
+        # finalArray.append(data)
+
+        # return finalArray  
+    except Exception as e:
+        print("Error reading the Excel file:", e)
+
+
+                
 
 def getNewsUrl(language):
     url_hindi = "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news"
@@ -97,7 +96,8 @@ def loadDataHolly():
 
 @app.route('/netflixToday', methods=['GET'])
 def loadData():
-    finalData=getMovieUrl()
+    finalData=getMovieFromNetflixXLSX()
+   
     return json.dumps({"data": finalData})    
 
 @app.route('/', methods=['GET'])
